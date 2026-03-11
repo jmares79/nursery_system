@@ -11,10 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('guardians', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('description')->nullable();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->foreignId('address_id')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -24,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('guardians');
     }
 };

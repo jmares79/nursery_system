@@ -11,15 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('child_parent', function (Blueprint $table) {
+        Schema::create('child_guardian', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('child_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('parent_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('guardian_id')->constrained()->cascadeOnDelete();
             $table->string('relationship')->nullable(); // mother, father, guardian
             $table->boolean('is_authorised_pickup')->default(true);
+            $table->boolean('is_primary_contact')->default(false);
+            $table->boolean('has_parental_responsibility')->default(false);
+
             $table->timestamps();
 
-            $table->unique(['child_id', 'parent_id']);
+            $table->unique(['child_id', 'guardian_id']);
         });
     }
 
@@ -28,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('child_parent');
+        Schema::dropIfExists('child_guardian');
     }
 };

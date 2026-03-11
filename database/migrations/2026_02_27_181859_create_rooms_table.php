@@ -17,6 +17,8 @@ return new class extends Migration
             $table->unsignedInteger('age_min_months')->nullable();
             $table->unsignedInteger('age_max_months')->nullable();
             $table->unsignedInteger('capacity')->default(0);
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }
