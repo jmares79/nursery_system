@@ -18,6 +18,8 @@ return new class extends Migration
             $table->text('description');
             $table->dateTime('incident_date');
             $table->boolean('acknowledged')->default(false);
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

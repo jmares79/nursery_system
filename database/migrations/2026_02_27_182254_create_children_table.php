@@ -15,15 +15,41 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
+            $table->string('nickname')->nullable();
             $table->date('date_of_birth');
-            $table->foreignId('room_id')->nullable()->constrained()->nullOnDelete();
+
+            $table->foreignId('room_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
+
             $table->foreignId('key_worker_id')
                 ->nullable()
                 ->constrained('staff')
                 ->nullOnDelete();
+
             $table->text('allergies')->nullable();
             $table->text('notes')->nullable();
             $table->boolean('is_active')->default(true);
+
+            $table->foreignId('address_id')->nullable();
+
+            $table->string('gender')->nullable();
+
+            $table->boolean('special_educational_needs')->default(false);
+            $table->text('medical_notes')->nullable();
+            $table->text('dietary_requirements')->nullable();
+            $table->string('additional_languages')->nullable();
+
+            $table->string('religion')->nullable();
+            $table->string('ethnic_origin')->nullable();
+
+            $table->string('funding_type')->nullable();
+
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

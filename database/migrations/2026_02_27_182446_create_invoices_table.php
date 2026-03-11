@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('child_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('parent_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('guardian_id')->constrained()->cascadeOnDelete();
             $table->decimal('amount', 10, 2);
             $table->date('due_date');
-            $table->enum('status', ['pending', 'paid', 'cancelled'])->default('pending');
+            $table->string('status')->nullable();
             $table->dateTime('issued_at')->nullable();
             $table->dateTime('paid_at')->nullable();
             $table->text('notes')->nullable();
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

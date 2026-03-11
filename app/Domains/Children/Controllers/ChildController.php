@@ -3,41 +3,48 @@
 namespace App\Domains\Children\Controllers;
 
 use App\Domains\Children\Models\Child;
+use App\Domains\Children\Requests\StoreChildRequest;
+use App\Domains\Children\Requests\UpdateChildRequest;
+use App\Domains\Children\Resources\ChildResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 
 class ChildController extends Controller
 {
-    public function index()
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return Child::latest()->get();
+        $children = Child::query()
+            ->when($request->search, function ($query) use ($request) {
+                $query->where('first_name', 'like', "%{$request->search}%")
+                    ->orWhere('last_name', 'like', "%{$request->search}%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        return ChildResource::collection($children);
     }
 
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(StoreChildRequest $request): ChildResource
     {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'date_of_birth' => 'required|date',
-        ]);
+        $child = Child::create($request->validated());
 
-        $child = Child::create($validated);
-
-        return response()->json($child, 201);
+        return new ChildResource($child);
     }
 
-    public function show(Child $child)
+    public function show(Child $child): ChildResource
     {
-        return $child;
+        return new ChildResource($child);
     }
 
-    public function update(Request $request, Child $child)
+    public function update(UpdateChildRequest $request, Child $child): ChildResource
     {
         $child->update($request->all());
-        return $child;
+        return new ChildResource($child);
     }
 
-    public function destroy(Child $child): \Illuminate\Http\Response
+    public function destroy(Child $child): Response
     {
         $child->delete();
         return response()->noContent();
