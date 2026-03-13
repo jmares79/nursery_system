@@ -3,13 +3,16 @@
 namespace App\Domains\Children\Models;
 
 use App\Domains\Guardians\Models\Guardian;
+use Database\Factories\ChildFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Child extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -34,9 +37,19 @@ class Child extends Model
 
     protected $appends = ['full_name'];
 
+    protected static function newFactory()
+    {
+        return ChildFactory::new();
+    }
+
     public function guardians(): BelongsToMany
     {
-        return $this->belongsToMany(Guardian::class);
+        return $this->belongsToMany(Guardian::class)
+            ->withPivot([
+                'relationship',
+                'is_authorised_pickup'
+            ])
+            ->withTimestamps();
     }
 
     public function getFullNameAttribute(): string
